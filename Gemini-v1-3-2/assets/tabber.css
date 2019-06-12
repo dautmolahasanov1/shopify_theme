@@ -1,0 +1,144 @@
+.tabbertab {
+  text-align: justify;
+  font-size: 13px;
+  font-size: 1.3rem;
+  margin: 0 2rem;
+  max-width: 890px;
+}
+
+ul.tabs {
+  border-bottom: 1px dotted #DDDDDD;
+  display: block;
+  margin: 20px 0 20px;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+ul.tabs li {
+  display: block;
+  float: left;
+  height: 36px;
+  margin-bottom: 0px;
+  margin-right: 5px;
+  padding: 0;
+  width: auto;
+}
+
+ul.tabs li:last-of-type {
+  margin-right: 0;
+}
+
+ul.tabs li a {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #DDDDDD !important;
+  border-style: dotted;
+  border-width: 1px 1px 0 1px;
+  display: block;
+  font-size: 11px;
+  height: 37px;
+  line-height: 37px;
+  margin: 0;
+  padding: 0 15px;
+  text-decoration: none;
+  display: block;
+  width: auto;
+  color: #999;
+  border-bottom: none !important;
+}
+
+ul.tabs li a:hover {
+  color: #666;
+}
+
+
+ul.tabs li a.active {
+  background: none repeat scroll 0 0 #fff;
+  border-left-width: 1px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  color: #111111;
+  height: 42px;
+  margin: 0;
+  padding-top: 5px;
+  position: relative;
+  top: -5px;
+  opacity: 1;
+  color: #ffaa33;
+}
+
+ul.tabs li:first-child a.active {
+  margin-left: 0;
+}
+
+ul.tabs li:first-child a {
+  border-top-left-radius: 2px;
+  border-width: 1px 1px 0;
+}
+
+ul.tabs li:last-child a {
+  border-top-right-radius: 2px;
+}
+
+ul.tabs:before,
+ul.tabs:after {
+  content: " ";
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+}
+
+ul.tabs:after {
+  clear: both;
+}
+
+.tabbertab iframe {
+  height: 340px;
+  width: 600px;
+}
+
+#Brand p a img {
+  display: block;
+  float: left;
+  margin-right: 10px;
+}
+
+
+
+@media screen and (max-width: 767px) {
+
+  .tabbertab {
+    margin: 0;
+  }
+
+  ul.tabs {
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: row wrap;
+    text-align: center;
+  }
+
+  ul.tabs li {
+    flex: 1 auto;
+    min-width: 60px;
+    text-align: center;
+    list-style: none;
+  }
+
+  ul.tabs li:nth-child(3) {
+    margin-right:0;
+  }
+
+  ul.tabs li:nth-child(n+4) {
+    display:none;
+  }
+  
+  ul.tabs li a {
+    padding: 0;
+  }
+
+}

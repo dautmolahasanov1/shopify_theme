@@ -1,0 +1,61 @@
+<div id="HulkAppsReviews" data-type="allReviews" style="display:none;">
+
+  <div id="reviewsList">
+    <div class="row reviews-header" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+      <div class="col-sm-12 text-center">
+        <meta itemprop="bestRating" content="5" />
+        <h3 class="title-rating"><span v-text="totalReviews" itemprop="ratingCount"></span> Reviews</h3>
+        <span style="display: none;" itemprop="ratingValue" v-text="reviewsAvgRating" ></span>
+        <div v-if="totalReviews > 0" class="avg-rating" v-html="getAvgRating()" itemprop="ratingValue"></div>
+      </div>
+    </div>
+    <div style="height: 20px;"></div>
+    <div v-for="review in allReviews.data" class="row">
+      <div class="col-sm-12">
+        <div class="review-item">
+          <div class="row">
+            <div class="col-sm-2 equalize">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="review-author" v-text="review.author"></div>
+                  <div class="review-date text-uppercase" v-text="dateFormat(review.created_at)"></div>
+                </div>
+                <div class="col-sm-12">
+                  <div style="height: 30px;"></div>
+                  <div v-for="field in review.review_custom_fields" v-if="field.value" class="row review-custom-fields">
+                    <div class="col-sm-12">
+                      <strong v-text="field.label+':'" class="text-uppercase"></strong>
+                    </div>
+                    <div class="col-sm-12">
+                      <span v-text="field.value"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div :class="{ 'col-sm-8': settings.image_upload_enable, 'col-sm-10': !settings.image_upload_enable }">
+              <div class="review-details equalize">
+                <div class="review-rating">
+                  <span v-html="getRating(review)"></span>
+                </div>
+                <div class="review-title text-uppercase" v-text="review.title"></div>
+                <div class="review-body" v-html="review.body"></div>
+                <div class="review-product-link">
+                  <a :href="'/products/'+review.product_handle" target="_blank"><strong v-text="'On '+review.product_title"></strong></a>
+                </div>
+              </div>
+            </div>
+            <div v-if="settings.image_upload_enable" class="col-sm-2 equalize">
+              <img :src="review.image" class="review-image img-responsive" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <pagination :data="allReviews.pagination" @pagination-change-page="getPagedResults"/>
+  </div>
+
+</div>

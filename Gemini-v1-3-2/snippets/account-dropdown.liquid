@@ -1,0 +1,26 @@
+<ul class="dropdown-menu dropdown-menu-right">
+  {% if customer %}
+    <li>
+      <a href="/account">{{ 'customer.account.dashboard' | t }}</a>
+    </li>
+  	<li>
+      <a href="/pages/wishlist">Wishlist</a>
+    </li>
+  	<li>
+      <a href="/apps/giftregistry/">Gift Registry</a>
+    </li>
+    <li>
+      {{ 'layout.customer.log_out' | t | customer_logout_link }}
+    </li>
+  {% else %}
+    <li>
+      {{ 'layout.customer.log_in' | t | customer_login_link }}
+    </li>
+  	<li>
+      <a href="/pages/wishlist">Wishlist</a>
+    </li>
+    <li>
+      {{ 'layout.customer.create_account' | t | customer_register_link }}
+    </li>
+  {% endif %}
+</ul>
