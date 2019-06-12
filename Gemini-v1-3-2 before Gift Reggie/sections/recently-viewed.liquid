@@ -1,0 +1,160 @@
+{{ '//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js' | script_tag }}
+{{ 'jquery.products.min.js' | asset_url | script_tag }}
+
+<div id="recently-viewed-products" class="collection clearfix" style="display:none">
+  <div class="collection clearfix">
+    <h2 class="related-section-header__title">
+      <span class="related-section-header__text">
+        Recently Viewed Products:
+      </span>
+    </h2>
+  </div>
+</div>
+
+  {% raw %}
+  <script id="recently-viewed-product-template" type="text/x-jquery-tmpl">
+    <div id="product-${handle}" class="product grid__item one-half large-up--one-fifth">
+      <div class="image">
+        <a href="${url}">
+          <img src="${Shopify.Products.resizeImage(featured_image, "medium")}" />
+        </a>
+      </div>
+      <div class="details">        
+        <div class="product-info">
+	      
+          <h3>${vendor}</h3>
+          
+          <h2 class="product-title">
+            <a href="${url}" title=“${title}“ tabindex="0">
+              ${title}
+            </a>
+            
+          </h2>
+		</div>
+      </div>
+    </div>
+  </script>
+  {% endraw %}
+
+
+<script>
+  Shopify.Products.showRecentlyViewed( { howManyToShow:5 } );
+</script>
+
+<style>
+  /* Some styles to get you started */
+  .collection {
+    clear: both;
+  }
+  
+  .collection:hover {
+  	opacity: 1;
+  }
+  
+  .collection .product {
+    float: left;
+    text-align: center;
+    padding-left: 0;
+    position: relative; /* used to display absolutely positioned sale tag */
+    overflow: hidden;
+  }
+  
+  .collection .product ~ .product {
+	padding-left: 15px;
+  }
+
+  
+  
+  @media only screen and (max-width: 1024px) and (min-width: 750px) {
+    
+    .collection .product {
+  		width: 33.33333%;
+        margin-bottom: 20px;
+    }
+    
+    .collection .product:nth-child(5),
+    .collection .product:nth-child(6) {
+      display: none;
+      visibility: hidden;
+    }
+    
+    .collection {
+      margin-bottom: 0;
+    }
+    
+    .collection .product:nth-child(3n+2) {
+      clear: left;
+      padding-left: 0;
+    }
+  }
+  
+  @media only screen and (max-width: 750px) {
+
+	.collection .product {
+      width: 50%;
+      margin-bottom: 20px;
+    }
+    
+    .collection .product:nth-child(6) {
+      display: none;
+      visibility: hidden;
+    }
+    
+    .collection .product:nth-child(2n+2) {
+      clear: left;
+      padding-left: 0;
+    }
+    
+    .collection {
+      margin-bottom: 0;
+    }
+  }  
+  
+  .collection .product:hover {
+  	opacity: 0.8;
+  }
+  
+  .collection .product.last {
+    margin-right: 0;
+  }
+  .collection .product .image {
+    margin-bottom: 10px;
+    height: 160px;
+    overflow: hidden;
+  }
+  .collection .product .cy {
+    display: block;
+    margin: 0 auto;
+  }
+  .collection .product .image img {
+    max-width: 100%;
+    max-height: 160px;
+    width: auto;
+    margin: auto;
+  }
+  .collection .product .title {
+    display: block;
+    line-height: 16px;
+    font-size: 12px;
+    color: #222;
+    font-weight: 700;
+  }
+  .collection .product .price {
+    display: block;
+    line-height: 16px;
+    font-size: 11px;
+    color: #777;
+    font-weight: normal;
+  }
+  /* new clearfix */
+  .clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+  * html .clearfix             { zoom: 1; } /* IE6 */
+  *:first-child+html .clearfix { zoom: 1; } /* IE7 */
+</style>

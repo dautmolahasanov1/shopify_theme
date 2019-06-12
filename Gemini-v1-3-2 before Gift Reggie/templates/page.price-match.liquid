@@ -1,0 +1,72 @@
+<div
+  class="page__header"
+  {% if settings.page_header_image %}
+    style="background-image: url({{ settings.page_header_image | img_url: 'master' }});"
+  {% endif %}
+  >
+  <div class="page-width">
+    <header>
+      <h2 class="page__title">{{ page.title }}</h2>
+      {% include 'breadcrumbs' %}
+    </header>
+  </div>
+</div>
+
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--push-one-sixth medium-up--two-thirds one-whole">
+      {{ page.content }}
+    </div>
+    <div
+      class="grid__item medium-up--push-one-sixth medium-up--two-thirds one-whole">
+      <h3 class="has-line">{{ 'contact.form.title' | t }}</h3>
+      <div class="form contact-form">
+        {% form 'contact' %}
+
+          {% if form.posted_successfully? %}
+            <p class="form-success">
+              {{ 'contact.form.post_success' | t }}
+            </p>
+          {% endif %}
+
+          {{ form.errors | default_errors }}
+
+          <div class="grid">
+            <div class="grid__item medium-up--one-half">
+              <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+              <input type="text"
+                name="contact[name]"
+                id="ContactFormName"
+                placeholder="{{ 'contact.form.name' | t }}"
+                value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+            </div>
+
+            <div class="grid__item medium-up--one-half">
+              <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+              <input type="email"
+                name="contact[email]"
+                id="ContactFormEmail"
+                placeholder="{{ 'contact.form.email' | t }}"
+                value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                spellcheck="false"
+                autocomplete="off"
+                autocapitalize="off">
+            </div>
+          </div>
+
+          
+          <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+          <textarea rows="5"
+            name="contact[body]"
+            id="ContactFormMessage"
+            placeholder="Link and comments"
+            >Link:
+Comments:</textarea>
+
+          <input type="submit" class="btn" value="{{ 'contact.form.send' | t }}">
+
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>

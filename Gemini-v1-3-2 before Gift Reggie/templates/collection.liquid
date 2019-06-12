@@ -1,0 +1,295 @@
+{% comment %}
+Assign some variable from configuration in theme customize
+{% endcomment %}
+
+{%- assign top_banner_is_disabled = settings.top_banner_disable -%}
+{%- assign topbar_is_disabled = settings.collection_top_bar_disable -%}
+{%- assign toolbar_is_disabled = settings.toolbar_disable -%}
+
+{%- assign layout = settings.collection_layout -%}
+{%- if layout == 'fullwidth' -%}
+  {%- assign is_full_layout = true -%}
+{%- else -%}
+  {%- assign is_full_layout = false -%}
+{%- endif -%}
+
+{%- assign mobile_2_cols_enable = settings.two_cols_layout_enable -%}
+
+{%- assign column_number_w_sidebar = settings.column_number_with_sidebar | plus: 0 -%}
+{%- assign column_number_wo_sidebar = settings.column_number_without_sidebar | plus: 0 -%}
+{%- if is_full_layout -%}
+  {%- assign column_number = column_number_wo_sidebar -%}
+{%- else -%}
+  {%- assign column_number = column_number_w_sidebar -%}
+{%- endif -%}
+
+{%- assign grid_style = settings.collection_grid_style -%}
+
+{% comment %}
+Fix number of item_per_page to hide (not fix, just a hack) bug with metro grid.
+The height of images is calculated by css calc() and then is rounded up/down
+depend on browsers. It causes 1px diff of height between 2 small images with
+1 big image and further causes masonry calculate wrong position of grid items.
+Default: 12
+{% endcomment %}
+{%- assign item_per_page = 24 -%}
+{%- if grid_style == 'metro' -%}
+  {%- if column_number == 4 or column_number == 6 -%}
+    {%- assign item_per_page = 24 -%}
+  {%- elsif column_number == 5 -%}
+    {%- assign item_per_page = 20 -%}
+  {%- endif -%}
+{%- else -%}
+  {%- if column_number == 5 -%}
+    {%- assign item_per_page = 20 -%}
+  {%- endif -%}
+{%- endif -%}
+
+{% comment %}
+base_product_item_wrapper - Used to set classes for product item on small devices.
+extra_product_item_wrapper - Used to set classes for product item on bigger devices.
+Used in snippets/product-item.liquid
+{% endcomment %}
+{%- assign base_product_item_wrapper = 'grid__item medium--one-third' -%}
+{%- if mobile_2_cols_enable -%}
+  {%- assign base_product_item_wrapper = base_product_item_wrapper | append: ' small--one-half' -%}
+{%- endif -%}
+
+{%- unless grid_style == 'metro' -%}
+  {%- case column_number -%}
+    {%- when 2 -%}
+      {%- assign extra_product_item_wrapper = 'large-up--one-half' -%}
+    {%- when 3 -%}
+      {%- assign extra_product_item_wrapper = 'large-up--one-third' -%}
+    {%- when 4 -%}
+      {%- assign extra_product_item_wrapper = 'large-up--one-quarter' -%}
+    {%- when 5 -%}
+      {%- assign extra_product_item_wrapper = 'large-up--one-fifth' -%}
+    {%- when 6 -%}
+      {%- assign extra_product_item_wrapper = 'large-up--one-sixth' -%}
+  {%- endcase -%}
+{%- endunless -%}
+
+{% comment %}
+Set image size to use for product based on number of column numbers
+{% endcomment %}
+{%- if column_number >= 5 -%}
+  {%- assign image_size = '480x480' -%}
+{%- elsif column_number == 4 -%}
+  {%- assign image_size = '600x600' -%}
+{%- else -%}
+  {%- assign image_size = '1024x1024' -%}
+{%- endif -%}
+
+{% comment %} ----------*** Markup start here ***---------- {% endcomment %}
+
+<div class="collection-page__header">
+  <div class="page-width">
+      {% include 'breadcrumbs' %}
+  </div>
+</div>
+{%- unless top_banner_is_disabled -%}
+  <section class="collection-top-banner">
+    <div class="collection-description page-width">
+      
+      {% unless collection.description contains 'h1>'  %}
+      
+      {% if {{collection.title | downcase}}  == "Brands" or {{collection.title | downcase}}  contains "gifts by" -%}
+      
+      	<h1>{{current_tags}}</h1>
+      
+      {% else -%}
+      
+      <h1>{{ collection.title }}</h1>
+      
+      {% endif -%}
+      {% endunless -%}
+      {{ collection.description }}</div>
+    <!--span>{% section 'collection-slideshow' %}</span-->
+  </section>
+{%- endunless -%}
+
+<div class="page-width">
+  
+  
+
+  {% comment %} ----------*** GIFT GUIDE START ***---------- {% endcomment %}
+
+  {% if collection.handle contains "gifts-by-" %}
+
+  {% if collection.handle contains "gifts-by-age" %}
+  {% assign my_int = "newborn,baby,1 Year,2 Years,3 Years,4 Years,5 Years,6 Years,7 Years,mum" | split: ',' %}
+
+  {% elsif collection.handle contains "gifts-by-type" %}
+  {% assign my_int = "outdoor,games,building,imaginative,developmental,educational,arts and crafts,magnetic,musical,decor,wooden,bath,weaning,school,shines and glows,tummy time" | split: ',' %}
+
+  {% elsif collection.handle contains "gifts-by-price" %}
+  {% assign my_int = "under 10,10 - 25,25 - 50,50 - 75,75 - 150" | split: ',' %}
+
+  {% elsif collection.handle contains "gifts-by-brand" %}
+  {% assign my_int = "beaba,bebe au lait,boon,brio,charlie crane,dot.baby,duux,esthex,everEarth,flensted,janod,kid o,milaniwood,moluk,my munchkin,oxo,p'kolino,plan toys,puj,quut,selecta,shea mooti,skip hop,speckled house,tegu,zidzid" | split: ',' %}
+
+  {% endif%}
+
+  <ul class="subnav clearfix page-width">
+
+
+    {% for tag in my_int %}
+    {% assign tag = {{tag | downcase}} %}
+    {% assign current_tags = {{current_tags | downcase}} %}
+    {% if current_tags contains tag %}
+    <meta name="robots" content="noindex" />
+    <li class="active">
+      {{ tag | capitalize | link_to_remove_tag: tag }}
+    </li>
+    {% else %}
+    <li>
+      {{ tag | capitalize | link_to_tag: tag }}
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  <style>
+    /* Contain floats: nicolasgallagher.com/micro-clearfix-hack/ */
+    .clearfix:before, .clearfix:after { content: ""; display: table; }
+    .clearfix:after { clear: both; }
+    .clearfix { zoom: 1; }
+    /* Subnavigation styles */
+    .subnav { display: -webkit-flex;display: flex; flex-flow: row wrap; clear: both; margin: 2rem auto; text-align: center;}
+    .subnav li { -webkit-flex: 1 auto; flex: 1 auto; min-width: 100px; text-align: center; list-style: none; }
+    .subnav li a {
+      display: block;
+      height: 28px;
+      line-height: 28px;
+      padding: 0 7px;
+      -webkit-border-radius: 7px;
+      -moz-border-radius: 7px;
+      border-radius: 2rem;
+      background: #d9534f;
+      margin: 0 7px 7px 0;
+      color: #fff;
+    }
+    .subnav li a:hover {
+      background: #ac2925;
+      color: #fff;
+    }
+
+    .subnav li.active a {
+      cursor: not-allowed;
+      background: #ccc;
+      color: #fff;
+    }
+  </style>
+  {% endif %}
+  {% comment %} ----------*** GIFT GUIDE END ***---------- {% endcomment %}
+
+
+
+  <div class="page-content page-content--{{ layout }}">
+  {%- unless is_full_layout -%}
+    <div class="grid">
+      <div class="js-filter-wrapper grid__item large-up--one-quarter medium-down--hide {% if layout == 'right_sidebar' %}large-up--push-three-quarters{% endif %}">
+        {% section 'collection-sidebar' %}
+      </div>
+
+      <div class="grid__item large-up--three-quarters {% if layout == 'right_sidebar' %}large-up--pull-one-quarter{% endif %}">
+  {%- endunless -%}
+
+    {%- unless topbar_is_disabled -%}
+      {% include 'collection-top-bar' %}
+    {%- endunless -%}
+
+    <section class="collection-content">
+      {%- unless toolbar_is_disabled and layout != 'fullwidth' -%}
+        {% include 'collection-toolbar' %}
+      {%- endunless -%}
+
+      {% paginate collection.products by item_per_page %}
+
+        <div class="grid grid--{{- grid_style -}} {% unless grid_style == 'normal' %} js-grid-masonry{% else %} grid--uniform{% endunless %}">
+          {%- for product in collection.products -%}
+            {%- if grid_style == 'metro' -%}
+              {%- if column_number == 2 -%}
+                {%- assign metro_surplus = forloop.index | modulo: 3 -%}
+              {%- else -%}
+                {%- assign metro_surplus = forloop.index | modulo: item_per_page -%}
+              {%- endif -%}
+
+              {%- case column_number -%}
+                {%- when 2 -%}
+                  {%- if metro_surplus == 0 -%}
+                    {%- assign image_size = '2048x2048' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-whole grid--metro__item--big' -%}
+                  {%- else -%}
+                    {%- assign image_size = '1024x1024' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-half' -%}
+                  {%- endif -%}
+
+                {%- when 3 -%}
+                  {%- if metro_surplus == 2 or metro_surplus == 7 -%}
+                    {%- assign image_size = '1024x1024' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--two-thirds grid--metro__item--big' -%}
+                  {%- else -%}
+                    {%- assign image_size = '600x600' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-third' -%}
+                  {%- endif -%}
+
+                {%- when 4 -%}
+                  {%- if metro_surplus == 2 or metro_surplus == 10 -%}
+                    {%- assign image_size = '1024x1024' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-half grid--metro__item--big' -%}
+                  {%- else -%}
+                    {%- assign image_size = '600x600' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-quarter' -%}
+                  {%- endif -%}
+
+                {%- when 5 -%}
+                  {%- if metro_surplus == 2 or metro_surplus == 6 -%}
+                    {%- assign image_size = '1024x1024' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--two-fifths grid--metro__item--big' -%}
+                  {%- else -%}
+                    {%- assign image_size = '600x600' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-fifth' -%}
+                  {%- endif -%}
+
+                {%- when 6 -%}
+                  {%- if metro_surplus == 2 or metro_surplus == 11 -%}
+                    {%- assign image_size = '1024x1024' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-third grid--metro__item--big' -%}
+                  {%- else -%}
+                    {%- assign image_size = '480x480' -%}
+                    {%- assign extra_product_item_wrapper = 'large-up--one-sixth' -%}
+                  {%- endif -%}
+              {%- endcase -%}
+            {%- endif -%}
+
+            {% include 'product-item' %}
+
+          {%- else -%}
+            <div class="grid__item one-whole">
+              <p>{{ 'general.extras.no_item_available' | t }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          {% include 'pagination' %}
+        {% endif %}
+      {% endpaginate %}
+    </section>
+  {%- unless is_full_layout -%}
+      </div>
+    </div>
+  {%- endunless -%}
+  </div>
+</div>
+
+<div class="collection-sidebar--full-layout" id="full-layout-filter-drawer">
+  {%- if is_full_layout -%}
+    {% section 'collection-sidebar' %}
+  {%- endif -%}
+  <a class="filter-drawer__close" href="javascript:;">
+    {% include 'icon-close' %}
+  </a>
+</div>
+{{ 'calendly.css' | asset_url | stylesheet_tag }}

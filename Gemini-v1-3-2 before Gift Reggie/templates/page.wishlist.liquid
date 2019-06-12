@@ -1,0 +1,122 @@
+<div class="page__header" {% if settings.page_header_image %}style="background-image: url({{ settings.page_header_image | img_url: 'master' }});"{% endif %}>
+  <div class="page-width">
+    <header>
+      <h2 class="page__title">{{ page.title }}</h2>
+      {% include 'breadcrumbs' %}
+    </header>
+  </div>
+</div>
+
+<div class="page-width">
+  <div class="rte">
+    {{ page.content }}
+  </div>
+
+  
+  
+  <h2 id="owner">{% if customer.has_account %}{{ customer.first_name}}'s{% else %}Your{% endif %} Wishlist</h2>
+  
+  
+  
+  <h4 id="notice">This isn't your wishlist? <a href="/pages/wishlist" style="color: #fa3">Click here</a> to see yours</h4>
+  <ul class="wishlist-product" id="wishlist-product">
+    <li class="first">
+      <div class="product-img"></div>
+      <div class="product-name">{{ 'wishlist.label.product' | t }}</div>
+      <div class="product-price">{{ 'wishlist.label.price' | t }}</div>
+      <div class="product-status">{{ 'wishlist.label.stock_status' | t }}</div>
+      <div class="product-add">{{ 'wishlist.label.add_to_cart' | t }}</div>
+      <div class="product-remove">{{ 'wishlist.label.remove' | t }}</div>
+    </li>
+  </ul>
+  <div id="shareWishlist">
+    <label for="urlInput">Wishlist address<br/>
+      <input type="text" value="" id="urlInput" disabled>
+    </label>
+    <button class="btn btn--sm" onclick="copyWishlistURL()">Copy wishlist link</button>
+
+    <a class="btn btn--sm" id="emailWishlist" href="mailto:?subject=See%20my%20wishlist%20on%20Bebemoda" target="_blank">Email your wishlist</a>
+  </div>
+</div>
+
+<script>
+  function copyWishlistURL () {
+    var copyText = document.getElementById("urlInput");
+    copyText.removeAttribute("disabled");
+    copyText.select();
+    document.execCommand("copy");
+    copyText.setAttribute("disabled", "disabled");
+  };
+
+  $(function() {
+    var urlInput = document.getElementById('urlInput')
+    var ids = JSON.parse(Cookies.get('wishlist') || null);
+    var urlParts = "";
+    var emailWishlist = document.getElementById('emailWishlist');
+    var owner = document.getElementById('owner');
+
+    if (urlInput.value == "" && window.location.href.indexOf("?") != -1) {
+
+      urlParts = window.location.href.split( '?' ) || null;
+      ids = urlParts[urlParts.length - 1].split(",");
+
+      if (!Cookies.get('wishlist')) {
+        Cookies.set('wishlist', ids );
+      }
+      urlInput.value = `https://bebemoda.co.uk/pages/wishlist?${ids.toString()}`;
+      shareWishlist.setAttribute("style", "display: none;");
+      jQuery("#notice").attr("style", "display: block;");
+    }
+
+    urlInput.value = `https://bebemoda.co.uk/pages/wishlist?${ids.toString()}`;
+    emailWishlist.setAttribute("href", `mailto:?subject=See%20my%20wishlist%20on%20Bebemoda&body=See%20my%20wishlist%20here%0D%0A%0D%0Ahttps://bebemoda.co.uk/pages/wishlist?${ids.toString()}`)
+
+    try {
+      if(ids.length) {
+        for (var i = 0; i < ids.length; i++) {
+          if (ids[i] != '') {
+            Shopify.getProduct(ids[i], function(product) {
+              gemini.wishlist.renderWishlistProduct(product);
+            });
+          }
+        }
+      } else {
+        jQuery('#wishlist-product').innerHTML = `<p style="text-align: center;">You haven't added any products to your wishlist. <a class="has-line" href="/">Start adding!</a></p>`;
+        jQuery('#shareWishlist').innerHTML = "";
+      }
+
+      jQuery('.currency .active').trigger('click');
+    } catch (err) {
+      jQuery('#wishlist-product').innerHTML = `<p style="text-align: center;">You haven't added any products to your wishlist. <a class="has-line" href="/">Start adding!</a></p>`;
+      jQuery('#shareWishlist').innerHTML = "";
+    } // If there is an error show no products in the Wishlist
+  })
+</script>
+<style>
+  #shareWishlist {
+    margin: 2rem 0;
+  }
+  #shareWishlist .btn {
+    margin: 10px 5px;
+  }
+  #notice {
+    display: none;
+  }
+  
+  @media screen and (max-width: 749px) {
+    #shareWishlist .btn {
+      margin: 10px auto;
+      clear: both;
+      display: block;
+      width: 250px;
+    }
+    #shareWishlist label,
+    #shareWishlist input {
+      text-align: center;
+      margin: auto;
+      clear: both;
+      display: block;
+      width: 250px;
+    }
+  }
+</style>
